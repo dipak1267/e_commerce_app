@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio_app/extenstion/app_extention.dart';
-import 'package:portfolio_app/extenstion/app_haptics.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:portfolio_app/consts/assets.dart';
 import 'package:portfolio_app/main.dart';
-import 'package:portfolio_app/theme/theames.dart';
+import 'package:portfolio_app/theme/themed_text.dart';
+import 'package:portfolio_app/theme/themes.dart';
 import 'package:portfolio_app/ui/common/commons.dart';
+import 'package:portfolio_app/ui/widgets/app_page_indicator.dart';
+import 'package:portfolio_app/ui/widgets/buttons/circle_button.dart';
+import 'package:portfolio_app/utils/app_extention.dart';
+import 'package:portfolio_app/utils/app_haptics.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({Key? key}) : super(key: key);
@@ -14,13 +19,14 @@ class IntroScreen extends StatefulWidget {
 
 class _IntroScreenState extends State<IntroScreen> {
   static const double _imageSize = 264;
-  static const double _logoHeight = 126;
+  static const double _logoHeight = 150;
   static const double _textHeight = 155;
   static const double _pageIndicatorHeight = 55;
 
   static List<_PageData> pageData = [];
 
-  late final PageController _pageController = PageController();
+  late final PageController _pageController = PageController()
+    ..addListener(_handlePageChanged);
   final ValueNotifier<int> _currentPage = ValueNotifier(0);
 
   @override
@@ -34,11 +40,11 @@ class _IntroScreenState extends State<IntroScreen> {
     // Set the page data, as strings may have changed based on locale
     pageData = [
       _PageData(appStrings.introTitleFirst, appStrings.introDescriptionFirst,
-          'camel', '1'),
+          '1', '1'),
       _PageData(appStrings.introTitleSecond, appStrings.introDescriptionSecond,
-          'petra', '2'),
+          '2', '2'),
       _PageData(appStrings.introTitleThird, appStrings.introDescriptionThird,
-          'statue', '3'),
+          '3', '3'),
     ];
 
     // This view uses a full screen PageView to enable swipe navigation.
@@ -46,6 +52,17 @@ class _IntroScreenState extends State<IntroScreen> {
     // so we stack a PageView with that content over top of all the other
     // content, and line up their layouts.
     super.initState();
+  }
+
+  void _handleIntroCompletePressed() {
+    if (_currentPage.value == pageData.length - 1) {
+      // logic for end intro
+    }
+  }
+
+  void _handlePageChanged() {
+    int newPage = _pageController.page?.round() ?? 0;
+    _currentPage.value = newPage;
   }
 
   void _handleSemanticSwipe(int dir) {
@@ -78,9 +95,52 @@ class _IntroScreenState extends State<IntroScreen> {
       IgnorePointer(
           ignoringSemantics: false,
           child: Column(
-            children: [],
+            children: [
+              const Spacer(),
+              // logo:
+              Semantics(
+                header: true,
+                child: Container(
+                  height: _logoHeight,
+                  alignment: Alignment.center,
+                  child: _AppLogo(),
+                ),
+              ),
+              // masked image:
+              SizedBox(
+                height: _imageSize,
+                width: _imageSize,
+                child: ValueListenableBuilder<int>(
+                  valueListenable: _currentPage,
+                  builder: (_, value, __) {
+                    return AnimatedSwitcher(
+                      duration: $styles.times.slow,
+                      child: KeyedSubtree(
+                        key: ValueKey(
+                            value), // so AnimatedSwitcher sees it as a different child.
+                        child: _PageImage(data: pageData[value]),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              // placeholder for text:
+              (_IntroScreenState._textHeight).addHSpace(),
+
+              // page indicator:
+              Container(
+                height: _pageIndicatorHeight,
+                alignment: const Alignment(0.0, -0.75),
+                child: AppPageIndicator(
+                    count: pageData.length,
+                    controller: _pageController,
+                    color: $styles.colors.offWhite),
+              ),
+
+              const Spacer(flex: 2),
+            ],
           )),
-      /*  // finish button:
+      // finish button:
       Positioned(
         right: $styles.insets.lg,
         bottom: $styles.insets.lg,
@@ -88,18 +148,27 @@ class _IntroScreenState extends State<IntroScreen> {
       ),
 
       // nav help text:
-      BottomCenter(
+      Align(
+        alignment: Alignment.bottomCenter,
         child: Padding(
           padding: EdgeInsets.only(bottom: $styles.insets.lg),
           child: _buildNavText(context),
         ),
-      ),*/
+      ),
     ]);
 
-    return Container();
+    return Scaffold(
+      body: DefaultTextColor(
+        color: $styles.colors.offWhite,
+        child: Container(
+          color: $styles.colors.black,
+          child: SafeArea(child: content.animate().fadeIn(delay: 500.ms)),
+        ),
+      ),
+    );
   }
 
-/*  Widget _buildFinishBtn(BuildContext context) {
+  Widget _buildFinishBtn(BuildContext context) {
     return ValueListenableBuilder<int>(
       valueListenable: _currentPage,
       builder: (_, pageIndex, __) {
@@ -107,10 +176,10 @@ class _IntroScreenState extends State<IntroScreen> {
           opacity: pageIndex == pageData.length - 1 ? 1 : 0,
           duration: $styles.times.fast,
           child: CircleIconBtn(
-            icon: AppIcons.next_large,
+            icon: Icons.arrow_forward_outlined,
             bgColor: $styles.colors.accent1,
             onPressed: _handleIntroCompletePressed,
-            semanticLabel: $strings.introSemanticEnterApp,
+            semanticLabel: '',
           ),
         );
       },
@@ -125,19 +194,18 @@ class _IntroScreenState extends State<IntroScreen> {
           opacity: pageIndex == pageData.length - 1 ? 0 : 1,
           duration: $styles.times.fast,
           child: Semantics(
-            onTapHint: appStrings.introSemanticNavigate,
+            onTapHint: appStrings.introSemanticSwipeLeft,
             onTap: () {
               final int current = _pageController.page!.round();
               _pageController.animateToPage(current + 1,
                   duration: 250.ms, curve: Curves.easeIn);
             },
-            child: Text($strings.introSemanticSwipeLeft,
-                style: $styles.text.bodySmall),
+            child: (appStrings.introSemanticSwipeLeft).appBodySmallText(),
           ),
         );
       },
     );
-  }*/
+  }
 }
 
 @immutable
@@ -170,14 +238,9 @@ class _Page extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  data.title,
-                  // style: $styles.text.wonderTitle.copyWith(fontSize: 24)
-                ),
+                data.title.appTittleText(),
                 ($styles.insets.sm).addSpace(),
-                Text(data.desc,
-                    // style: $styles.text.body,
-                    textAlign: TextAlign.center),
+                data.desc.appBodyText(),
               ],
             ),
           ),
@@ -185,6 +248,38 @@ class _Page extends StatelessWidget {
         (_IntroScreenState._pageIndicatorHeight).addSpace(),
         const Spacer(flex: 2),
       ]),
+    );
+  }
+}
+
+class _AppLogo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ExcludeSemantics(
+          child: Image.asset(ImagePaths.appTransparentLogo,
+              color: $styles.colors.offWhite, height: 120),
+        ),
+      ],
+    );
+  }
+}
+
+class _PageImage extends StatelessWidget {
+  const _PageImage({Key? key, required this.data}) : super(key: key);
+
+  final _PageData data;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: Image.asset(
+        '${ImagePaths.intro}intro_${data.img}.png',
+        fit: BoxFit.cover,
+        alignment: Alignment.centerRight,
+      ),
     );
   }
 }

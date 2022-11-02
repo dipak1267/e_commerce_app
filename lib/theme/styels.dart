@@ -1,11 +1,18 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:portfolio_app/theme/colors.dart';
 
 final $styles = AppStyle();
 
 @immutable
 class AppStyle {
+  /// The current theme colors for the app
+  final AppColors colors = AppColors();
+
   /// Rounded edge corner radii
   late final _Corners corners = _Corners();
 
@@ -13,6 +20,9 @@ class AppStyle {
 
   /// Padding and margin values
   late final _Insets insets = _Insets();
+
+  /// Text styles
+  late final _Text text = _Text();
 
   /// Animation Durations
   final _Times times = _Times();
@@ -65,4 +75,32 @@ class _Shadows {
         offset: const Offset(0, 4),
         blurRadius: 6),
   ];
+}
+
+@immutable
+class _Text {
+  TextStyle appTextStyle() {
+    return GoogleFonts.readexPro();
+  }
+
+  TextStyle get titleFont => appTextStyle().copyWith(fontFeatures: const [
+        FontFeature.enable('dlig'),
+        FontFeature.enable('kern'),
+      ]);
+
+  TextStyle get defaultFont => appTextStyle();
+  TextStyle get contentFont => appTextStyle();
+
+  TextStyle copy(TextStyle style,
+      {required double sizePx,
+      double? heightPx,
+      double? spacingPc,
+      FontWeight? weight}) {
+    return style.copyWith(
+        fontSize: sizePx,
+        height: heightPx != null ? (heightPx / sizePx) : style.height,
+        letterSpacing:
+            spacingPc != null ? sizePx * spacingPc * 0.01 : style.letterSpacing,
+        fontWeight: weight);
+  }
 }
