@@ -23,29 +23,29 @@ extension SizeBoxes on num {
 }
 
 extension AppTexts on String {
-  Text appTittleText() {
+  Text appTittleText({double sizePx = 24, double heightPx = 27}) {
     return Text(
       this,
       style: $styles.text.copy($styles.text.defaultFont,
-          sizePx: 24, weight: FontWeight.w600, heightPx: 27),
+          sizePx: sizePx, weight: FontWeight.w600, heightPx: heightPx),
       textAlign: TextAlign.center,
     );
   }
 
-  Text appBodyText() {
+  Text appBodyText({double sizePx = 14, double heightPx = 27}) {
     return Text(
       this,
       style: $styles.text.copy($styles.text.defaultFont,
-          sizePx: 14, weight: FontWeight.w400, heightPx: 27),
+          sizePx: sizePx, weight: FontWeight.w400, heightPx: heightPx),
       textAlign: TextAlign.center,
     );
   }
 
-  Text appButtonText() {
+  Text appButtonText({double sizePx = 14, double heightPx = 23}) {
     return Text(
       this,
-      style:
-          $styles.text.copy($styles.text.defaultFont, sizePx: 14, heightPx: 23),
+      style: $styles.text
+          .copy($styles.text.defaultFont, sizePx: sizePx, heightPx: heightPx),
       textAlign: TextAlign.center,
     );
   }

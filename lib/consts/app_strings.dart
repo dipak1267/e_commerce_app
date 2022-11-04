@@ -8,4 +8,8 @@ class AppStrings {
   String get introTitleThird => "Get product at your door";
   String get introDescriptionThird => "Get your product at your\ndoorstep";
   String get introSemanticSwipeLeft => "Swipe left to continue";
+
+  String get signInTittle => "Sign In";
+  String get signInBody => "Sign In to \nyour account";
+  String get signUpTittle => "Sign Up";
 }

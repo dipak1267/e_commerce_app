@@ -33,6 +33,7 @@ class _Times {
   final Duration fast = const Duration(milliseconds: 300);
   final Duration med = const Duration(milliseconds: 600);
   final Duration slow = const Duration(milliseconds: 900);
+  final Duration lazy = const Duration(milliseconds: 1500);
   final Duration pageTransition = const Duration(milliseconds: 200);
 }
 
@@ -41,6 +42,9 @@ class _Corners {
   late final double sm = 4;
   late final double md = 8;
   late final double lg = 32;
+
+  late final double textFieldBorderRadius = 15;
+  late final double startUpBorderRadius = 32;
 }
 
 @immutable

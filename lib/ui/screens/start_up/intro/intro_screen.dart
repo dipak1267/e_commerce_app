@@ -1,15 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/get.dart';
 import 'package:portfolio_app/consts/assets.dart';
 import 'package:portfolio_app/main.dart';
 import 'package:portfolio_app/theme/themed_text.dart';
 import 'package:portfolio_app/theme/themes.dart';
 import 'package:portfolio_app/ui/common/commons.dart';
+import 'package:portfolio_app/ui/widgets/app_logo.dart';
 import 'package:portfolio_app/ui/widgets/app_page_indicator.dart';
 import 'package:portfolio_app/ui/widgets/buttons/circle_button.dart';
 import 'package:portfolio_app/utils/app_extention.dart';
 import 'package:portfolio_app/utils/app_haptics.dart';
 import 'package:portfolio_app/utils/route_manager.dart';
+import 'package:portfolio_app/utils/spring_curver.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({Key? key}) : super(key: key);
@@ -23,7 +28,7 @@ class _IntroScreenState extends State<IntroScreen> {
   static const double _logoHeight = 150;
   static const double _textHeight = 155;
   static const double _pageIndicatorHeight = 55;
-
+  RxDouble yOffset = 0.25.obs;
   static List<_PageData> pageData = [];
 
   late final PageController _pageController = PageController()
@@ -38,6 +43,9 @@ class _IntroScreenState extends State<IntroScreen> {
 
   @override
   void initState() {
+    Timer(Duration.zero, () {
+      yOffset.value = -0.08;
+    });
     // Set the page data, as strings may have changed based on locale
     pageData = [
       _PageData(appStrings.introTitleFirst, appStrings.introDescriptionFirst,
@@ -100,14 +108,21 @@ class _IntroScreenState extends State<IntroScreen> {
             children: [
               const Spacer(),
               // logo:
-              Semantics(
-                header: true,
-                child: Container(
-                  height: _logoHeight,
-                  alignment: Alignment.center,
-                  child: _AppLogo(),
-                ),
-              ),
+              Obx(() {
+                return AnimatedSlide(
+                  offset: Offset(0, yOffset.value),
+                  duration: const Duration(milliseconds: 2000),
+                  curve: const SpringCurve(),
+                  child: Semantics(
+                    header: true,
+                    child: Container(
+                      height: _logoHeight,
+                      alignment: Alignment.center,
+                      child: AppLogo(),
+                    ),
+                  ),
+                );
+              }),
               // masked image:
               SizedBox(
                 height: _imageSize,
@@ -118,8 +133,8 @@ class _IntroScreenState extends State<IntroScreen> {
                     return AnimatedSwitcher(
                       duration: $styles.times.slow,
                       child: KeyedSubtree(
-                        key: ValueKey(
-                            value), // so AnimatedSwitcher sees it as a different child.
+                        key: ValueKey(value),
+                        // so AnimatedSwitcher sees it as a different child.
                         child: _PageImage(data: pageData[value]),
                       ),
                     );
@@ -164,7 +179,9 @@ class _IntroScreenState extends State<IntroScreen> {
         color: $styles.colors.offWhite,
         child: Container(
           color: $styles.colors.black,
-          child: SafeArea(child: content.animate().fadeIn(delay: 500.ms)),
+          child: SafeArea(child: content
+              // .animate().fadeIn(delay: 500.ms)
+              ),
         ),
       ),
     );
@@ -250,21 +267,6 @@ class _Page extends StatelessWidget {
         (_IntroScreenState._pageIndicatorHeight).addSpace(),
         const Spacer(flex: 2),
       ]),
-    );
-  }
-}
-
-class _AppLogo extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ExcludeSemantics(
-          child: Image.asset(ImagePaths.appTransparentLogo,
-              color: $styles.colors.offWhite, height: 120),
-        ),
-      ],
     );
   }
 }
