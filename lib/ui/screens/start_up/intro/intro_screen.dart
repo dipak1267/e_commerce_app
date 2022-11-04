@@ -9,6 +9,7 @@ import 'package:portfolio_app/ui/widgets/app_page_indicator.dart';
 import 'package:portfolio_app/ui/widgets/buttons/circle_button.dart';
 import 'package:portfolio_app/utils/app_extention.dart';
 import 'package:portfolio_app/utils/app_haptics.dart';
+import 'package:portfolio_app/utils/route_manager.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({Key? key}) : super(key: key);
@@ -57,6 +58,7 @@ class _IntroScreenState extends State<IntroScreen> {
   void _handleIntroCompletePressed() {
     if (_currentPage.value == pageData.length - 1) {
       // logic for end intro
+      RouteManager.navigateOff(RouteManager.signInScreen);
     }
   }
 
