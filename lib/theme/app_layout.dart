@@ -10,7 +10,10 @@ TextStyle textFieldLabelStyle() {
 
 OutlineInputBorder startupTextFieldBorder() {
   return OutlineInputBorder(
-      borderRadius:
-          BorderRadius.circular($styles.corners.textFieldBorderRadius),
-      borderSide: const BorderSide(color: Color(0xFF474747)));
+    borderRadius: BorderRadius.circular(6),
+    borderSide: BorderSide(
+      width: 1,
+      color: $styles.colors.white,
+    ),
+  );
 }

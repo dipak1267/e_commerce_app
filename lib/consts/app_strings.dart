@@ -12,4 +12,6 @@ class AppStrings {
   String get signInTittle => "Sign In";
   String get signInBody => "Sign In to \nyour account";
   String get signUpTittle => "Sign Up";
+  String get email => "Email";
+  String get password => "Password";
 }

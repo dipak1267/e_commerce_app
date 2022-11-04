@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:portfolio_app/theme/styels.dart';
 import 'package:portfolio_app/theme/themed_text.dart';
 import 'package:portfolio_app/ui/screens/start_up/sign_in/sign_in_controller.dart';
 import 'package:portfolio_app/ui/widgets/app_logo.dart';
+import 'package:portfolio_app/ui/widgets/buttons/common_button.dart';
 import 'package:portfolio_app/ui/widgets/start_up_text_field.dart';
 import 'package:portfolio_app/utils/app_extention.dart';
 import 'package:portfolio_app/utils/spring_curver.dart';
@@ -31,6 +33,7 @@ class SignInScreen extends StatelessWidget {
               Center(
                 child: AppLogo(
                   size: _logoHeight,
+                  color: $styles.colors.black,
                 ),
               ),
             ],
@@ -72,9 +75,30 @@ class SignInScreen extends StatelessWidget {
               StartupTextField(
                 controller: signInController.emailTextField,
                 type: TextInputType.emailAddress,
-                label: '',
+                label: appStrings.email,
+                prefixIcon: Icon(
+                  CupertinoIcons.mail,
+                  color: $styles.colors.white,
+                ),
                 validator: (val) {},
               ),
+              $styles.insets.lg.addHSpace(),
+              StartupTextField(
+                controller: signInController.passwordTextField,
+                isPassword: true,
+                type: TextInputType.visiblePassword,
+                label: appStrings.password,
+                prefixIcon: Icon(
+                  CupertinoIcons.lock,
+                  color: $styles.colors.white,
+                ),
+                validator: (val) {},
+              ),
+              $styles.insets.lg.addHSpace(),
+              AppFieldButton(
+                onTap: () {},
+                text: appStrings.signInTittle,
+              )
             ],
           ).paddingSymmetric(horizontal: $styles.insets.md),
         ),
@@ -85,7 +109,7 @@ class SignInScreen extends StatelessWidget {
       body: DefaultTextColor(
         color: $styles.colors.offWhite,
         child: Container(
-          color: $styles.colors.greyStrong,
+          color: $styles.colors.white,
           child: SafeArea(child: content),
         ),
       ),

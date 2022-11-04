@@ -3,16 +3,16 @@ import 'package:portfolio_app/utils/color_utils.dart';
 
 class AppColors {
   /// Common
-  final Color accent1 = Color(0xFFE4935D);
+  final Color accent1 = Color(0xFFFA3A3F);
   final Color accent2 = Color(0xFFBEABA1);
   final Color offWhite = Color(0xFFF8ECE5);
   final Color caption = const Color(0xFF7D7873);
-  final Color body = const Color(0xFF514F4D);
+  final Color body = const Color(0xFF343434);
   final Color greyStrong = const Color(0xFF272625);
   final Color greyMedium = const Color(0xFF9D9995);
   final Color white = Colors.white;
-  final Color black = const Color(0xFF1E1B18);
-
+  final Color black = const Color(0xFF1E2121);
+  Color transparentColor = Colors.transparent;
   final bool isDark = false;
 
   Color shift(Color c, double d) =>

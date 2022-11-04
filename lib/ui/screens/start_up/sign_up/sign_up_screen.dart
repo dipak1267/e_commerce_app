@@ -76,7 +76,7 @@ class SignUpScreen extends StatelessWidget {
       body: DefaultTextColor(
         color: $styles.colors.offWhite,
         child: Container(
-          color: $styles.colors.greyStrong,
+          color: $styles.colors.black.withOpacity(0.92),
           child: SafeArea(child: content),
         ),
       ),
